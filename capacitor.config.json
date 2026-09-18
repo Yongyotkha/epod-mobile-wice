@@ -1,0 +1,6 @@
+{
+	"appId": "com.tag.ePOD",
+	"appName": "ePOD",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

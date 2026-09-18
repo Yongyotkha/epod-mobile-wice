@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-title>กรอกลายเซ็น</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="clearCanvas()" color="light">ล้างลายเซ็น</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <canvas #imageCanvas (touchstart)="startDrawing($event)" (mousedown)="startDrawing($event)"
+    (touchmove)="moved($event)" (mousemove)="moved($event)" (mouseup)="endDrawing()" (touchend)="endDrawing()">
+  </canvas>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="full" color="danger" size="large" (click)="dismissModal('close')">
+              ปิด
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="full" color="primary" size="large" (click)='submitSignature()'
+              *ngIf="this.eventString == 'eventPass'">
+              บันทึก
+            </ion-button>
+            <ion-button expand="full" color="success" size="large" (click)='submitSignature()'
+              *ngIf="this.eventString == 'eventNotPass'">
+              นำส่ง
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </section>
+  </ion-toolbar>
+</ion-footer>

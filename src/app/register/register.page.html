@@ -1,0 +1,34 @@
+<ion-header>
+</ion-header>
+
+<ion-content>
+
+  <div class="profile-card-div">
+    <ion-card class="home-card">
+      <div class="home-header">
+        <img src="{{blackLogo}}" class="whiteLogo slide-in logo">
+      </div>
+    </ion-card>
+  </div>
+
+  <div class="home-data-card">
+    <div class="head-div">
+      <h2 class="login"> สมัครสมาชิก</h2>
+    </div>
+    <ion-list class="login-box">
+      <ion-item detail class="login-item">
+        <ion-input type="password" placeholder="ชื่อผู้ใช้" required>
+        </ion-input>
+      </ion-item>
+      <ion-item detail class="login-item">
+        <ion-input type="text" class="loginInput" placeholder="รหัสผ่าน" required>
+        </ion-input>
+      </ion-item>
+      <ion-item detail class="login-item">
+        <ion-input type="password" placeholder="ยืนยันรหัสผ่าน" required>
+        </ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="register()" class="loginButton" type="submit">สมัครสมาชิก </ion-button>
+      <h3 class="register" (click)="loginPage()">มีชื่อผู้ใช้งานอยู่แล้วกลับไป <span>เข้าสู่ระบบ</span> คลิก</h3>
+    </ion-list>
+  </div>

@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="start" class="nav-content">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>หน้าหลัก</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #fff">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="ดึงเพื่อรีเฟรช"
+      refreshingSpinner="crescent"
+      refreshingText="กำลังโหลด...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="dash-time">
+    <div class="time" hidden>11:38</div>
+    <div class="date">{{utilservice.driverInfo.date_today}}</div>
+  </div>
+
+  <ion-list>
+    <ion-item lines="none">
+      <ion-avatar slot="start" class="avatar-icon">
+        <ion-img src="{{utilservice.driverInfo.image}}"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        <h2 class="fwb">
+          ชื่อ:{{ utilservice.driverInfo.firstName }} {{
+          utilservice.driverInfo.lastName }}
+        </h2>
+        <p>รหัส.{{utilservice.driverInfo.driverCode}}</p>
+        <p>เบอร์โทร.{{utilservice.driverInfo.mobile}}</p>
+        <p>ทะเบียนรถ : {{utilservice.driverInfo.carNumber}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- <ion-row>
+    <ion-col no-padding>
+      <div class="card-header">
+        รายงานการส่ง
+        <span>20 บิล</span>
+      </div>
+    </ion-col>
+  </ion-row> -->
+
+  <div class="mydash">
+    <ion-row class="py-md">
+      <ion-col size="6">
+        <div class="card" (click)="DeliverFinish()">
+          <img src="assets/imgs/location-marker.png" alt="" />
+          <p>จำนวนจุดส่ง</p>
+          <p>{{ this.utilservice.servicedropcount }}</p>
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div class="card" (click)="DeliverFinish()">
+          <img src="assets/imgs/invoiceall.png" alt="" />
+          <p>Orders</p>
+          <p>{{ this.utilservice.serviceordercount }}</p>
+        </div>
+      </ion-col>
+     <!-- <ion-col size="6">
+        <div class="card" (click)="DeliverFinish()">
+          <img src="./../../assets/imgs/waiting.png" alt="" />
+          <p>บิลรอส่ง</p>
+          <p>2</p>
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div class="card" (click)="DeliverFinish()">
+          <img src="./../../assets/imgs/fail.png" alt="" />
+          <p>บิลที่ส่งไม่ได้</p>
+          <p>2</p>
+        </div>
+      </ion-col>-->
+    </ion-row>
+  </div>
+
+  <ion-button expand="full" color="warning" (click)="Getjob();" size="large"
+    >รับงาน &nbsp;
+    <ion-icon ios="ios-qr-scanner" md="md-qr-scanner" class="fs-30"></ion-icon>
+  </ion-button>
+  <ion-button
+    expand="full"
+    color="primary"
+    (click)="DeliverFinish();"
+    size="large"
+    >งานของฉัน &nbsp; <fa-icon icon="list"> </fa-icon>
+  </ion-button>
+  <ion-button expand="full" color="success" (click)="Deliver();" size="large"
+    >นำส่ง &nbsp; <fa-icon icon="address-card"> </fa-icon>
+  </ion-button>
+  <ion-button expand="full" color="success" (click)="downloadMyJob();" id="downmyjob" hidden
+  >นำส่ง &nbsp; <fa-icon icon="truck-moving"> </fa-icon>
+</ion-button>
+</ion-content>
+
+<ion-footer no-shadow hidden>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <ion-button expand="full" color="warning" (click)="Getjob();"
+        >รับงาน &nbsp;<fa-icon icon="hand-pointer"></fa-icon>
+      </ion-button>
+      <ion-button expand="full" color="primary" (click)="DeliverFinish();"
+        >งานของฉัน &nbsp; <fa-icon icon="truck-moving"> </fa-icon>
+      </ion-button>
+      <ion-button expand="full" color="success" (click)="downloadMyJob();"
+      >นำส่ง &nbsp; <fa-icon icon="truck-moving"> </fa-icon>
+    </ion-button>
+      <ion-button expand="full" color="success" (click)="Deliver();"
+        >นำส่ง &nbsp; <fa-icon icon="truck-moving"> </fa-icon>
+      </ion-button>
+    </section>
+  </ion-toolbar>
+</ion-footer>
+ 

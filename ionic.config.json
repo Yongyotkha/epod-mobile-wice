@@ -1,0 +1,8 @@
+{
+  "name": "smartHR",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "angular"
+}

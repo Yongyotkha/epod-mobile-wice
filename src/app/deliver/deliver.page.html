@@ -1,0 +1,311 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="start" class="nav-content">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>นำส่งสินค้า</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="deliver-content" scrollY="true" style="background: #fff">
+  <div class="ion-grid">
+    <ion-row>
+      <ion-col>
+        <ion-item class="search_input ion-no-padding">
+          <ion-input class="searchBtn" type="text" placeholder="กรอกหมายเลขหรือแสกน" [(ngModel)]="textinputcomplete">
+          </ion-input>
+          <button item-right (click)="gettextinput()" *ngIf="textinputcomplete">
+            <ion-icon ios="ios-add-circle-outline" md="md-add-circle-outline" class="fs-30"></ion-icon>
+          </button>
+          <button item-right (click)="startscanning()" *ngIf="!textinputcomplete">
+            <ion-icon ios="ios-qr-scanner" md="md-qr-scanner" class="fs-30"></ion-icon>
+          </button>
+          <!--<button item-right [routerLink]="['/completejob-qrscanner']" *ngIf="!textinputcomplete">
+            <ion-icon ios="ios-qr-scanner" md="md-qr-scanner" class="fs-30"></ion-icon>
+          </button>-->
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div style="margin: 0.3rem" *ngIf="this.utilservice.completelist_table.length !== 0">
+    <div class="ion-grid">
+      <ion-row>
+        <ion-col size="4">
+          <span style="font-size: 20px">Orders : {{this.ordercount}} </span>
+        </ion-col>
+        <ion-col class="text-right" size="8">
+          <span class="span-success">
+            <fa-icon icon="check"></fa-icon> : {{
+            this.utilservice.ordercount_success}}
+          </span>
+          <span class="span-fail"><fa-icon icon="times"></fa-icon> : {{
+            this.utilservice.ordercount_fail}}
+          </span>
+          <!--  <ion-button
+            size="small"
+            (click)="historydeliver()"
+            class="circle-btn"
+          >
+            <fa-icon icon="plus"></fa-icon>
+            &nbsp; เพิ่ม
+          </ion-button>-->
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <div *ngIf="this.utilservice.completelist_table.length === 0" class="ion-text-center" style="font-size: 20px">
+    ไม่มีรายการ
+  </div>
+
+  <!-- แสดงจำนวนบิล และ จำนวนสินค้า หลังจากแสกน -->
+  <div class="bg-blue" hidden>
+    <div class="ion-grid ion-no-padding">
+      <ion-row>
+        <ion-col size="12">
+          <div class="card-container">
+            <div class="card-summary">
+              <img src="./../../assets/imgs/bill.png" alt="" />
+              จำนวน 4 บิล
+            </div>
+            <div class="card-summary">
+              <img src="./../../assets/imgs/parcel.png" alt="" />
+              จำนวน 20 ชิ้น
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <!-- แสดงผลรายการ -->
+  <div *ngFor="let d of this.utilservice.completelist_table; let i=index" class="ion-text-wrap">
+    <h3 class="header-text">จุดส่งที่ : {{d.drop_number}}</h3>
+    <div>
+      <div class="ion-grid">
+        <ion-row>
+          <ion-col>Orders : {{d.order_count}}</ion-col>
+          <ion-col class="text-right">
+            <ion-button size="small" color="danger" (click)="delete_item(i,d.drop_number)"><fa-icon
+                icon="times"></fa-icon>&nbsp; ยกเลิกการนำส่ง</ion-button>
+          </ion-col>
+        </ion-row>
+
+        <div>
+          <div class="ion-grid">
+            <ion-row class="header">
+              <ion-col class="col" size="1">No</ion-col>
+              <ion-col class="col" size="3">Order</ion-col>
+              <ion-col class="col" size="5">ลูกค้า</ion-col>
+              <ion-col class="col pd-none" size="1">
+                <div style="text-align: center">
+                  <fa-icon icon="info-circle"></fa-icon>
+                </div>
+              </ion-col>
+              <ion-col class="col pd-none" size="1">ส่ง</ion-col>
+              <ion-col class="col pd-none" size="1">
+                <div style="text-align: center"></div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="row" *ngFor="let result of this.utilservice.completelist_table[i].orders;let idx = index">
+              <ion-col class="col" size="1"><ion-text
+                  [color]="result.shipping_status_deliver == true ? '' : 'danger'">{{idx+1}}</ion-text></ion-col>
+              <ion-col class="col" size="2" (click)="openModal(i,idx)"><ion-text
+                  [color]="result.shipping_status_deliver == true ? '' : 'danger'">{{result.order_no}}</ion-text></ion-col>
+              <ion-col class="col" size="6" (click)="openModal(i,idx)">
+                <div>
+                  <ion-text [color]="result.shipping_status_deliver == true ? '' : 'danger'"><fa-icon
+                      style="font-size: 8px" icon="user"></fa-icon>&nbsp;{{result.customer}}</ion-text>
+                </div>
+                <div>
+                  <ion-text [color]="result.shipping_status_deliver == true ? 'medium' : 'danger'">
+                    <fa-icon style="font-size: 8px" icon="map-marker"></fa-icon>&nbsp;{{result.ship_to_city}}
+                  </ion-text>
+                </div>
+                <div *ngIf="result.rejectReason != null && result.rejectReasonOther == null">
+                  <ion-text [color]="result.shipping_status_deliver == true ? 'medium' : 'danger'"><fa-icon
+                      style="font-size: 8px" icon="times"></fa-icon>
+                    {{result.rejectReason}}&nbsp;{{result.remark_reason}}
+                  </ion-text>
+                </div>
+                <div *ngIf="result.rejectReason == null && result.rejectReasonOther != null">
+                  <ion-text [color]="result.shipping_status_deliver == true ? 'medium' : 'danger'"><fa-icon
+                      style="font-size: 8px" icon="check"></fa-icon>
+                    {{result.rejectReasonOther}}
+                  </ion-text>
+                </div>
+              </ion-col>
+              <ion-col class="col pd-none text-center" size="1">
+                <!--   <ion-button
+                  *ngIf="result.remark"s
+                  size="small"
+                  color="primary"
+                  (click)="openModal(i,idx)"
+                >
+                  <fa-icon icon="eye"></fa-icon> </ion-button
+              >-->
+                <button class="btn-remark" size="small" color="primary" (click)="editOrder(i,idx,'detail')">
+                  <fa-icon icon="pen" class="text-white"></fa-icon>
+                </button>
+
+                <!-- <button
+                  class="btn-smm"
+                  size="small"
+                  color="primary"
+                  (click)="openModal(i,idx)"
+                >
+                
+                  <fa-icon icon="eye" class="text-white"></fa-icon>
+                </button> -->
+              </ion-col>
+              <ion-col class="col text-center pd-0" size="1">
+                <div class="ion-text-center pd-3px">
+                  <input type="checkbox" [checked]="result.shipping_status_deliver"
+                    (change)="changeCheckbox_Shipping(i,idx,$event,'notSuccess')" />
+                </div>
+              </ion-col>
+              <ion-col class="col pd-none text-center" size="1">
+                <!--    <ion-button
+                  size="small"
+                  color="primary"
+                  (click)="editOrder(i,idx)"
+                >
+                  <fa-icon icon="pen"></fa-icon>
+                </ion-button>
+                 <ion-button
+                  size="small"
+                  color="danger"
+                  (click)="delete_order(i,idx,result.order_id)"
+                >
+                  <fa-icon icon="times"></fa-icon>
+                </ion-button>-->
+                <div style="text-align: center">
+                  <button class="btn-delete" size="small" color="danger" (click)="delete_order(i,idx,result.order_id)">
+                    <fa-icon icon="times" class="text-white"></fa-icon>
+                  </button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div [hidden]="boolhide">
+    <div class="ion-grid">
+      <ion-row hidden>
+        <ion-col>
+          <ion-item class="ion-no-padding">
+            <ion-label>สถานะ</ion-label>
+            <ion-select #statuss name="status" [(ngModel)]="status" (ionChange)="onChange(status)" okText="ตกลง"
+              cancelText="ยกเลิก">
+              <ion-select-option value="00">นำส่งสำเร็จ</ion-select-option>
+              <ion-select-option value="R00">นำส่งไม่สำเร็จ</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <div>
+        <ion-row>
+          <ion-col>
+            <ion-slides [options]="sliderOpts">
+              <ion-slide *ngFor="let img of showimage;let i = index">
+                <div class="warpper-img">
+                  <!-- <img src="assets/imgs/{{img}}.jpg" alt="" tappable (click)="openPreview(img)">-->
+                  <img [src]="img" alt="" tappable (click)="openPreview(i)" />
+                </div>
+                <div class="btn-delete-img">
+                  <ion-button expand="full" color="danger" (click)="delete_image(i,img)">ลบรูปภาพ &nbsp;
+                    <fa-icon icon="trash"></fa-icon>
+                  </ion-button>
+                </div>
+              </ion-slide>
+            </ion-slides>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <div *ngIf="statuss.value === 'R00' || statuss.value === '3' || statuss.value === '4'">
+        <ion-row>
+          <ion-col>
+            <ion-label position="stacked">หมายเหตุ</ion-label>
+            <ion-textarea [(ngModel)]="note"></ion-textarea>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+
+    <div class="ion-grid" [hidden]="boolhide">
+      <ion-row *ngIf="this.utilservice.signatureData !== ''">
+        <ion-col>
+          <div class="warpper-sig" style="border-style: solid">
+            <img [src]="this.utilservice.signatureData" alt="" tappable height="300" />
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <div [hidden]="true">
+      <div class="ion-grid">
+        <ion-row>
+          <ion-col>
+            <ion-label>ระบุลายเซ็น</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <canvas #imageCanvas (touchstart)="startDrawing($event)" (mousedown)="startDrawing($event)"
+              (touchmove)="moved($event)" (mousemove)="moved($event)" (mouseup)="endDrawing()"
+              (touchend)="endDrawing()">
+            </canvas>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="full" color="primary" (click)="clearCanvas()">
+              ล้างลายเซ็น &nbsp;
+              <fa-icon icon="pen"></fa-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <div *ngIf="this.utilservice.completelist_table.length === 0">
+        <ion-button [routerLink]="['/home']" routerDirection="forward" expand="full" color="primary"
+          size="large">กลับไปหน้าหลัก&nbsp;
+        </ion-button>
+      </div>
+
+      <ion-button [hidden]="boolhide" expand="full" color="warning" (click)="takePhoto()" size="large">ถ่ายรูปภาพ &nbsp;
+        <fa-icon icon="camera"></fa-icon>
+      </ion-button>
+
+      <div [hidden]="boolhide">
+        <ion-button [hidden]="this.utilservice.ishidden" (click)="getSignature('eventPass')" expand="full" size="large"
+          color="primary">กรอกลายเซ็น &nbsp;
+        </ion-button>
+      </div>
+      <ion-button (click)="showJoblist();" hidden id="chickrefresh" expand="full" color="primary">รีเฟรช
+      </ion-button>
+
+      <ion-button (click)="submit_deliver('ยืนยันการนำส่ง');" expand="full" color="success" size="large"
+        [hidden]="!this.utilservice.completejobList.length "
+        *ngIf="this.utilservice.ordercount_success != 0 ">ยืนยันการนำส่ง
+      </ion-button>
+
+      <ion-button (click)="submit_deliver('ยืนยันการส่งไม่สำเร็จ');" expand="full" color="danger" size="large"
+        [hidden]="!this.utilservice.completejobList.length"
+        *ngIf="this.utilservice.ordercount_success == 0 ">ยืนยันการส่งไม่สำเร็จ
+      </ion-button>
+    </section>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-title>Add Drop</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #fff">
+
+  <div style="margin: 0.3rem">
+    <div class="ion-grid">
+      <ion-row>
+        <ion-col>
+          <ion-text style="font-size: 20px"> รายการ : 1</ion-text>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <ion-grid>
+    <div class="ion-text-wrap">
+
+      <h3 class="header-text">
+        <span>
+          <ion-checkbox color="danger" size="large"></ion-checkbox> 
+          Drop:1
+        </span>
+      </h3>
+
+      <h3 class="header-text">
+        <span>
+          <ion-checkbox color="danger" size="large"></ion-checkbox>
+           Drop:2
+        </span>
+      </h3>
+
+
+    </div>
+  </ion-grid>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="danger" size="large" (click)="dismissModal()">
+          ยกเลิก
+        </ion-button>
+       
+      </ion-col>
+      <ion-col>
+        <ion-button expand="full" color="primary" size="large" (click)="addDrop();">
+          เพิ่ม
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

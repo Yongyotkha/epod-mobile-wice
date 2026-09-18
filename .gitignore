@@ -1,0 +1,60 @@
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+*~
+*.sw[mnpcod]
+.tmp
+*.tmp
+*.tmp.*
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
+$RECYCLE.BIN/
+
+*.log
+log.txt
+npm-debug.log*
+
+.idea/
+.ionic/
+.sass-cache/
+.sourcemaps/
+.versions/
+.vscode/
+coverage/
+dist/
+node_modules/
+platforms/
+plugins/
+www/
+
+# Subproject ignore
+mobile-epod-rn/
+
+# Android build and caches
+.gradle/
+**/build/
+android/.gradle/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android signing & certificates
+/android/keystore.properties
+/my-release-key.keystore
+*.jks
+*.keystore
+*.pem
+*.p12
+
+# Binaries & packages
+*.apk
+*.ap_
+*.aab
+*.aar
+*.dex
+*.class

@@ -1,0 +1,179 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="start" class="nav-content">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>งานของฉัน</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="margin: 0.3rem" *ngIf="this.utilservice.jobList.length !== 0">
+    <div class="ion-grid">
+      <ion-row>
+        <ion-col>
+          <ion-text style="font-size: 20px">
+            จำนวนจุดส่ง : {{this.countdrop}}
+          </ion-text>
+        </ion-col>
+        <ion-col class="text-right">
+          <ion-text style="font-size: 20px">
+            Orders : {{this.countorder}}
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <div *ngIf="this.utilservice.jobList.length === 0" class="ion-text-center" style="font-size: 20px">
+    ไม่มีรายการ
+
+  </div>
+
+  <!-- แสดงจำนวนบิล และ จำนวนสินค้า หลังจากแสกน -->
+  <div class="bg-blue" nopadding hidden>
+    <ion-grid class="ion-no-padding">
+      <ion-row class="ion-no-padding">
+        <ion-col size="12">
+          <div class="card-container">
+            <div class="card-summary">
+              <img src="./../../assets/imgs/invoiceall.png" alt="" />
+              บิลทั้งหมด 4 บิล
+            </div>
+
+            <div class="card-summary">
+              <img src="./../../assets/imgs/invoice.png" alt="" />
+              บิลที่ส่งได้ 4 บิล
+            </div>
+            <div class="card-summary">
+              <img src="./../../assets/imgs/waiting.png" alt="" />
+              บิลรอส่ง 4 บิล
+            </div>
+            <div class="card-summary">
+              <img src="./../../assets/imgs/fail.png" alt="" />
+              บิลที่ส่งไม่ได้ 4 บิล
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- แสดงผลรายการ -->
+  <div style="margin: 1rem" hidden>
+    <div class="ion-grid">
+      <ion-row>
+        <ion-col>
+          สถานะ :
+          <span class="status success"></span> ส่งแล้ว
+          <span class="status wait"></span> รอการนำส่ง
+          <span class="status fail"></span> ส่งไม่ได้
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <div *ngFor="let d of dropnumber; let i=index" class="ion-text-wrap" [ngClass]="{active: isGroupShown(i)}">
+    <h3 class="header-text" (click)="toggleGroup(i)">
+      จุดส่งที่ : {{d.drop_number}}
+      <ion-icon color="light" item-right [name]="isGroupShown(i) ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
+    </h3>
+    <div *ngIf="isGroupShown(i)">
+      <!-- UI Drop Order -->
+      <div class="mt-3">
+        <ion-row>
+          <ion-col> Orders : {{d.order_count}} </ion-col>
+          <ion-col class="text-right">
+            <ion-button hidden size="small" color="primary" (click)="checkSenddata(i)" [disabled]="!this.disablesend">
+              นำส่ง {{this.countorderselect}}
+            </ion-button>
+          </ion-col>
+          <ion-col class="ion-text-center" size="1">
+
+            <ion-checkbox class="custom-checkbox" (ionChange)="toggleAllCheckboxes($event)"></ion-checkbox>
+
+
+          </ion-col>
+        </ion-row>
+        <ion-grid>
+          <ion-row class="header">
+            <ion-col class="col" size="1">No</ion-col>
+            <ion-col class="col" size="3">Order</ion-col>
+            <ion-col class="col" size="6">ลูกค้า</ion-col>
+            <ion-col class="col" size="1">
+              <div style="text-align: center">
+                <fa-icon icon="info-circle"></fa-icon>
+              </div>
+            </ion-col>
+            <ion-col class="col" size="1">ส่ง</ion-col>
+          </ion-row>
+          <ion-row class="row" *ngFor="let result of datas[0];let idx = index">
+            <ion-col class="col" size="1">{{result.no}}</ion-col>
+            <ion-col class="col" size="3" (click)="openModal(i,idx)">{{result.order_no}}</ion-col>
+            <ion-col class="col" size="6">
+              <div>
+                <fa-icon style="font-size: 8px" icon="user"></fa-icon>&nbsp;{{result.customer}}
+              </div>
+              <div class="styleTextCity">
+                <fa-icon style="font-size: 8px" icon="map-marker"></fa-icon>&nbsp;{{result.ship_to_city}}
+              </div>
+            </ion-col>
+            <ion-col class="col pd-none text-center" size="1">
+              <!--
+              <ion-button
+                class="btn-smm"
+                *ngIf="result.remark"
+                size="small"
+                color="primary"
+                (click)="openModal(i,idx)"
+              >
+                <fa-icon icon="eye"></fa-icon> </ion-button
+            >
+            -->
+              <button class="btn-smm" size="small" color="primary" (click)="openModal(i,idx)">
+                <fa-icon icon="eye" class="text-white"></fa-icon>
+              </button>
+            </ion-col>
+            <ion-col class="col pd-0" size="1">
+              <div class="ion-text-center pd-3px" *ngIf="!result.shipping_status_deliver">
+                <!-- <input type="checkbox" [checked]="result.shipping_status_waiting" -->
+                <input type="checkbox" [checked]="result.shipping_status_waiting"
+                  (change)="changeCheckbox(i,idx,$event)" />
+              </div>
+              <div class="ion-text-center" *ngIf="result.shipping_status_deliver">
+                <ion-text color="success">ส่ง</ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="hr"></div>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <!-- <div *ngIf="this.utilservice.jobList.length == 0">
+        <ion-button [routerLink]="['/home']" expand="full" color="primary" size="large">กลับไปหน้าหลัก &nbsp;
+        </ion-button>
+      </div> -->
+
+      <ion-button style="text-transform: none !important" expand="full" size="large" color="success"
+        *ngIf="this.countorderselect > 0" (click)="sendData()">
+        เตรียมนำส่ง {{this.countorderselect}} Order
+      </ion-button>
+
+      <ion-button expand="full" hidden color="primary" (click)="showJoblist();" id="chickrefresh">รีเฟรช
+      </ion-button>
+      <!-- <ion-button hidden (click)="Home();" expand="full" class="buttonBackHome" size="large">กลับไปหน้าหลัก</ion-button> -->
+      <ion-button [routerLink]="['/home']" expand="full" color="primary" size="large">กลับไปหน้าหลัก &nbsp;
+      </ion-button>
+    </section>
+  </ion-toolbar>
+</ion-footer>

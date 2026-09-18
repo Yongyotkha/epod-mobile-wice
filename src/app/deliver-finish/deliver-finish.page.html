@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="start" class="nav-content">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>สินค้า</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="bg-blue" style="background: #fff">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="12">
+          <div class="card-container">
+            <div class="card-summary">
+              <img src="./../../assets/imgs/bill.png" alt="">
+              จำนวน 4 บิล
+            </div>
+            <div class="card-summary">
+              <img src="./../../assets/imgs/parcel.png" alt="">
+              จำนวน 20 ชิ้น
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <ion-button expand="full" color="success" (click)="Home();">กลับไปหน้าแรก &nbsp; <fa-icon icon="check"></fa-icon>
+      </ion-button>
+    </section>
+  </ion-toolbar>
+</ion-footer>

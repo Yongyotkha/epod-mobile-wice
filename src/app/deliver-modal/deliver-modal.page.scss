@@ -1,0 +1,145 @@
+.home-data-card {
+    position: relative;
+    margin-top: -50px;
+    background: white;
+    border-radius: 50px;
+    width: 100%;
+}
+
+.profile-card-div {
+  background: #2b388f;
+  height: 280px;
+  width: 100% !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+.home-card {
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+.home-header {
+  height: 144px;
+  position: relative;
+  top: 10px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 12px;
+  border-radius: 100px;
+  width: 300px;
+}
+
+.background-content {
+  --background: #e2e2e2 !important;
+}
+
+.blues-nav {
+  --background: #2b388f;
+}
+
+ion-item {
+  --ion-background-color: rgba(255, 255, 255, 0);
+}
+
+.nav-content {
+  color: #fff;
+}
+
+.optn-btn {
+  font-size: 26px;
+}
+
+.header-md:after {
+  background-image: none !important;
+}
+
+.dash-widget-icon fa-icon {
+  border-radius: 50%;
+  font-size: 40px;
+  height: 50px;
+  line-height: 48px;
+  font-weight: 400;
+  text-align: center;
+  width: 50px;
+}
+
+ion-menu-button {
+  color: #fff;
+}
+
+.search_input{
+  background: #eee;
+}
+
+.fs-30{
+  font-size: 30px;
+}
+
+ion-input.searchBtn{
+  padding-left: 1rem !important;
+}
+
+.bg-blue{
+  background: #2b388f;
+}
+.card{
+  &-container{
+    display: -webkit-box;
+    display: flex;
+    background: #2b388f;
+    width: 100%;
+    height: 70px;
+  }
+  &-summary{
+    width: 50%;
+    background: #fff;
+    margin: .5rem;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0px 10px 15px -3px rgb(0 0 0 / 10%);
+    border-radius: 5px;
+    img{
+      margin-right: .7rem;
+    }
+  }
+}
+
+
+.header .col {
+  background-color:lightgrey;
+}
+
+.col {
+  border: solid 1px grey;
+  border-bottom-style: none;
+  border-right-style: none;
+  font-size: 14px;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+}
+
+.col:last-child {
+  border-right: solid 1px grey;
+}
+
+.row:last-child .col {
+  border-bottom: solid 1px grey;
+}
+
+.header-text{
+display: flex;
+justify-content: space-between;
+background: #2b388e;
+color: #fff;
+padding: 1rem;
+align-items: center;
+margin: 0;
+border-bottom: 1px solid #fff;
+}

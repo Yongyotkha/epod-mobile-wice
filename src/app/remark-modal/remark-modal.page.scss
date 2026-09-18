@@ -1,0 +1,121 @@
+.welcome-card img {
+    max-height: 35vh;
+    overflow: hidden;
+  }
+  
+  .home-data-card {
+      position: relative;
+      margin-top: -50px;
+      background: white;
+      border-radius: 50px;
+      width: 100%;
+  }
+  
+  .profile-card-div {
+    background: #2b388f;
+    height: 280px;
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  .dashboard-area {
+      top: -100px;
+      position: relative;
+      width: 100%;
+      padding: 0 20px;
+  }
+  
+  .dashboard-col {
+    padding: 10px !important;
+    height: 180px
+  }
+  
+  .dashboard-col:nth-of-type(even) {
+    margin-top: 50px;
+  }
+  
+  .home-card {
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  .dash-widget {
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.08);
+    margin-bottom: 10px;
+    overflow: hidden;
+    padding: 15px;
+    height: 180px;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 25px;
+  }
+  
+  .home-header {
+    height: 144px;
+    position: relative;
+    top: 10px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 12px;
+    border-radius: 100px;
+    width: 300px;
+  }
+  
+  .background-content {
+    --background: #e2e2e2 !important;
+  }
+  
+  .dash-amount {
+    font-size: 22px;
+    font-weight: 800;
+    margin-top: 5px;
+    margin-bottom: 2px;
+  }
+  
+  .dash-text {
+    font-size: 18px;
+    margin-top: 0;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+  
+  .blues-nav {
+    --background: #2b388f;
+  }
+  
+  ion-item {
+    --ion-background-color: rgba(255, 255, 255, 0);
+  }
+  
+  .nav-content {
+    color: #fff;
+  }
+  
+  .optn-btn {
+    font-size: 26px;
+  }
+  
+  .header-md:after {
+    background-image: none !important;
+  }
+
+  ion-menu-button {
+    color: #fff;
+  }
+ 
+  ion-title{
+    color: white;
+  }
+
+.textShow{
+  color: #898589 !important; 
+}
+.hrStyle{
+  height:0.5px;
+  border-width:0;
+  color:lightgray;
+  background-color:lightgrey
+}

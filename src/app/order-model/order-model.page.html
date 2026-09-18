@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="end" hidden>
+      <ion-button (click)="dismissModal()" color="light">Close</ion-button>
+    </ion-buttons>
+    <ion-title>Order</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #fff">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-grid>
+            <ion-row class="header">
+              <ion-col class="col" size="1">no</ion-col>
+              <ion-col class="col" size="2">order</ion-col>
+              <ion-col class="col" size="6">ลูกค้า</ion-col>
+              <ion-col class="col" size="2"><div style=' text-align: center;'> <fa-icon icon="comment"></fa-icon> </div></ion-col>
+              <ion-col class="col" size="1"><div style=' text-align: center;'> <fa-icon icon="map-marker"></fa-icon> </div></ion-col>
+            </ion-row>
+            <ion-row class="row" *ngFor="let data of orderdata;let idx = index">
+              <ion-col class="col" size="1">{{data.no}}</ion-col>
+              <ion-col class="col" size="2">{{data.order}}</ion-col>
+              <ion-col class="col" size="6">{{data.customer_name}}</ion-col>
+              <ion-col class="col" size="2"></ion-col>
+              <ion-col class="col" size="1">{{data.dropNumber}}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <ion-button
+        (click)="dismissModal();"
+        expand="full"
+        size="large"
+        color="danger"
+        >ปิด</ion-button
+      >
+    </section>
+  </ion-toolbar>
+</ion-footer>

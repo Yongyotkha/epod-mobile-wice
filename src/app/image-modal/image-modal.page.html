@@ -1,0 +1,19 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Modal Content</ion-title>
+    <ion-buttons slot="end" hidden>
+      <ion-button (click)="close();">Close <ion-icon name="close" slot="end"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-slides [options]="sliderOpts">
+    <ion-slide>
+      <div class="swiper-zoom-container">
+        <!--<img src="assets/imgs/{{img}}.jpg" alt="{{img}}"> -->
+           <img src="{{ 'data:image/jpeg;base64,' + img }}" alt="" >
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

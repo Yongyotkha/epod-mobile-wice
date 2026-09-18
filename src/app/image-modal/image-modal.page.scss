@@ -1,0 +1,23 @@
+.close-fake{
+    --background: #000;
+    ion-icon{
+        font-size: 2rem;
+    }
+    font-size: 2rem;
+}
+
+ion-content.transparent{
+    --background:#000 !important;
+}
+
+ion-slides{
+    height: 100vh;
+}
+
+ion-modal{
+    --background:#000 !important;
+}
+
+.sc-ion-modal-ios-h {
+    --background:#000 !important;
+  }

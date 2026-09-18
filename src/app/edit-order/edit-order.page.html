@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-title>
+      <!-- <fa-icon icon="chevron-left" (click)="dismissModal()" ></fa-icon> &nbsp;-->
+      Order : {{this.order.order_no}}</ion-title
+    >
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #fff">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        ลูกค้า :
+        <ion-text style="color: lightslategrey"
+          >{{this.order.customer}}</ion-text
+        >
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        สถานะการส่ง : &nbsp;<input
+          type="checkbox"
+          [checked]="checksendsuccess"
+          (change)="changeCheckbox($event)"
+        />&nbsp;
+        <ion-text color="danger" *ngIf="!checksendsuccess"
+          >ส่งไม่สำเร็จ</ion-text
+        >
+        <ion-text color="success" *ngIf="checksendsuccess">ส่งสำเร็จ</ion-text>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!checksendsuccess">
+      <ion-col>
+        <ion-label class="font-bold">เหตุผลการยกเลิก</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!checksendsuccess">
+      <ion-col *ngIf=" this.reasonData !== undefined">
+        <ion-radio-group [(ngModel)]="selectReason">
+          <!-- <ion-list-header class="font-bold">
+            <ion-label>เหตุผลการยกเลิก</ion-label>
+          </ion-list-header> -->
+          <ion-item *ngFor="let i of this.reasonData.reasons">
+            <ion-label>{{i.name}}</ion-label>
+            <ion-radio slot="start" [value]="i.code"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="this.selectReason == 'R00' ">
+      <ion-col>
+        <ion-label position="stacked">หมายเหตุ</ion-label>
+        <ion-textarea
+          placeholder="ใส้ข้อความที่นี่"
+          [(ngModel)]="note"
+          class="textareabox"
+        ></ion-textarea>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+
+    <ion-row
+      *ngIf="this.selectReason == '00'"
+    >
+      <ion-col>
+        <ion-label position="stacked">หมายเหตุ</ion-label>
+        <ion-textarea
+          placeholder="ใส้ข้อความที่นี่"
+          [(ngModel)]="rejectReasonOther"
+          class="textareabox"
+        ></ion-textarea>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          expand="full"
+          color="danger"
+          size="large"
+          (click)="dismissModal()"
+        >
+          ปิด
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button
+          expand="full"
+          color="primary"
+          size="large"
+          (click)="SaveEditOrder()"
+        >
+          บันทึก
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

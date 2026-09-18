@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ePOD</string>
+    <string name="title_activity_main">ePOD</string>
+    <string name="package_name">com.tag.ePOD</string>
+    <string name="custom_url_scheme">com.tag.epod</string>
+</resources>

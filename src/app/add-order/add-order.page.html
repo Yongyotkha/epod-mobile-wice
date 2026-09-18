@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-title>Add Order</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #fff">
+
+  <!-- <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item class="search_input ion-no-padding">
+          <ion-input class="searchBtn" type="text" placeholder="กรอกหมายเลขหรือแสกน" [(ngModel)]="textinputcomplete">
+          </ion-input>
+          <button item-right (click)="gettextinput()" *ngIf="textinputcomplete">
+            <ion-icon ios="ios-add-circle-outline" md="md-add-circle-outline" class="fs-30"></ion-icon>
+          </button>
+          <button item-right (click)="startscanning()" *ngIf="!textinputcomplete">
+            <ion-icon ios="ios-qr-scanner" md="md-qr-scanner" class="fs-30"></ion-icon>
+          </button>
+          <button item-right [routerLink]="['/completejob-qrscanner']" *ngIf="!textinputcomplete">
+            <ion-icon ios="ios-qr-scanner" md="md-qr-scanner" class="fs-30"></ion-icon>
+          </button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-grid>
+            <ion-row class="header">
+              <ion-col class="col" size="2">No</ion-col>
+              <ion-col class="col" size="5">Order No</ion-col>
+              <ion-col class="col" size="5">Customer</ion-col>
+            </ion-row>
+            <ion-row class="row">
+              <ion-col class="col" size="2">1</ion-col>
+              <ion-col class="col" size="5">OR001</ion-col>
+              <ion-col class="col" size="5">Customer</ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>-->
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="danger" size="large" (click)="dismissModal()">
+          ยกเลิก
+        </ion-button>
+       
+      </ion-col>
+      <ion-col>
+      <!--  <ion-button expand="full" color="primary" size="large" (click)="Deliver();">
+          เพิ่ม
+        </ion-button>-->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

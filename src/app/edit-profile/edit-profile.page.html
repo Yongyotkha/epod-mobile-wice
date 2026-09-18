@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="start" class="nav-content">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>ตั้งค่า</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="pd-5">
+    <ion-row>
+      <div class="box-card-profile" (click)="selectImage()">
+        <div class="relative">
+          <div class="position-img">
+            <div class="circlr-img-avatar">
+              <ion-img src="{{utilservice.driverInfo.image}}"></ion-img>
+            </div>
+            <div class="btn-change-camera">
+              <ion-icon name="camera"></ion-icon>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-profile">
+          <h3 class="text-info">
+            ชื่อ:{{ utilservice.driverInfo.firstName }} {{
+            utilservice.driverInfo.lastName }}
+          </h3>
+          <span>แก้ไขข้อมูลส่วนตัว</span>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="list-profile">
+          <div class="item-profile">
+            <ion-item>
+              <ion-label position="stacked">เบอร์มือถือ</ion-label>
+              <ion-input type="number" value="{{utilservice.driverInfo.mobile}}" [(ngModel)] = "changePhoneProfle" (input)="checkEventPhone()"></ion-input>
+            </ion-item>
+          </div>
+        </div>
+        <div class="list-profile">
+          <div class="item-profile">
+            <ion-item>
+              <ion-label position="stacked">ทะเบียนรถ</ion-label>
+              <ion-input   type="text"  value="{{utilservice.driverInfo.carNumber}}"  [(ngModel)] = "changeCarNumber" (input)="checkEventCarNumber()"></ion-input>
+            </ion-item>
+          </div>
+        </div>
+        <div class="list-profile">
+          <div class="item-profile">
+            <ion-item>
+              <ion-label position="stacked">เปลียนรหัสผ่าน</ion-label>
+              <ion-button
+                color="primary"
+                style="margin-top: 10px; margin-bottom: 10px"
+                (click)='openModalRepass()'
+                >เปลียนรหัสผ่าน</ion-button
+              >
+            </ion-item>
+          </div>
+        </div>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="danger" size="large" (click)="Home()">
+          ปิด
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button
+          expand="full"
+          color="primary"
+          size="large"
+          (click)="SaveProfile()"
+          [disabled]="this.checkDisable"
+        >
+          บันทึก
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

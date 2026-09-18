@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar class="blues-nav">
+    <ion-buttons slot="end" hidden>
+      <ion-button (click)="dismissModal()" color="light">Close</ion-button>
+    </ion-buttons>
+    <ion-title>รายละเอียด</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #fff">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        Order&nbsp;:&nbsp;<span>{{remarkdata.order_no}}</span>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        ชื่อลูกค้า&nbsp;:&nbsp;<span class="textShow">{{remarkdata.customer}}</span>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        ที่อยู่&nbsp;:&nbsp;<span class="textShow">{{remarkdata.ship_to_address}}</span>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        จังหวัด&nbsp;:&nbsp;<span class="textShow">{{remarkdata.ship_to_city}}</span>
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        รหัสไปรษณีย์&nbsp;:&nbsp;<span class="textShow"
+          >{{remarkdata.ship_to_postal_code}}</span
+        >
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Remark&nbsp;:&nbsp;<span class="textShow"
+          >{{remarkdata.remark?remarkdata.remark:"ไม่มีข้อมูล"}}</span
+        >
+        <hr class="hrStyle" />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    <section class="full-width">
+      <ion-button
+        (click)="dismissModal();"
+        expand="full"
+        size="large"
+        color="danger"
+        >ปิด</ion-button
+      >
+    </section>
+  </ion-toolbar>
+</ion-footer>
