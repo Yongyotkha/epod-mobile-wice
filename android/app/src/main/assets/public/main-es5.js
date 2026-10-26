@@ -2674,10 +2674,12 @@ var GetjobQrscannerComponent = /** @class */ (function () {
     GetjobQrscannerComponent.prototype.startScannerUI = function () {
         document.body.classList.add('scanner-active');
         document.body.classList.add('qr-scanning');
+        document.documentElement.classList.add('qr-frame');
     };
     GetjobQrscannerComponent.prototype.stopScannerUI = function () {
         document.body.classList.remove('scanner-active');
         document.body.classList.remove('qr-scanning');
+        document.documentElement.classList.remove('qr-frame');
     };
     GetjobQrscannerComponent.prototype.ngOnInit = function () {
         var _this = this;

@@ -2598,10 +2598,12 @@ let GetjobQrscannerComponent = class GetjobQrscannerComponent {
     startScannerUI() {
         document.body.classList.add('scanner-active');
         document.body.classList.add('qr-scanning');
+        document.documentElement.classList.add('qr-frame');
     }
     stopScannerUI() {
         document.body.classList.remove('scanner-active');
         document.body.classList.remove('qr-scanning');
+        document.documentElement.classList.remove('qr-frame');
     }
     ngOnInit() {
         // Request camera permission first

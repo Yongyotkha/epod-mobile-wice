@@ -515,9 +515,11 @@ let DeliverPage = class DeliverPage {
         body.style.opacity = isScanning ? "0" : "1";
         if (isScanning) {
             body.classList.add("qr-scanning");
+            document.documentElement.classList.add("qr-frame");
         }
         else {
             body.classList.remove("qr-scanning");
+            document.documentElement.classList.remove("qr-frame");
         }
     }
     stopQrScanning() {

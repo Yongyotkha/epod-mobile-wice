@@ -107,8 +107,10 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
     body.style.opacity = isScanning ? "0" : "1";
     if (isScanning) {
       body.classList.add("qr-scanning");
+      document.documentElement.classList.add("qr-frame");
     } else {
       body.classList.remove("qr-scanning");
+      document.documentElement.classList.remove("qr-frame");
     }
   }
 

@@ -194,6 +194,22 @@ body.scanner-active ion-content {
   --background: transparent !important;
 }
 
+/* Square QR target frame. Drawn on <html> so it stays visible while body is faded out during scanning */
+html.qr-frame::after {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 70vmin;
+  height: 70vmin;
+  transform: translate(-50%, -50%);
+  border: 3px solid #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 99999;
+}
+
 /* Hide native nav decorations while scanner is active to avoid black overlay */
 body.scanner-active .nav-decor {
   display: none !important;
