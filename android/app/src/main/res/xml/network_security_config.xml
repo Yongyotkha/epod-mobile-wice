@@ -3,6 +3,7 @@
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />
+            <certificates src="@raw/globalsign_root_r46" />
         </trust-anchors>
     </base-config>
 </network-security-config>
