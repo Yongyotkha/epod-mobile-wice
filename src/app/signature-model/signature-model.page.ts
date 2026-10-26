@@ -110,8 +110,16 @@ export class SignatureModelPage implements OnInit {
 
   public submitSignature (){
       this.utilservice.signatureData = ''
+      // Server stores signatures as JPEG, so transparent pixels would turn black
+      const flattened = document.createElement('canvas');
+      flattened.width = this.canvasElement.width;
+      flattened.height = this.canvasElement.height;
+      const flatCtx = flattened.getContext('2d');
+      flatCtx.fillStyle = '#ffffff';
+      flatCtx.fillRect(0, 0, flattened.width, flattened.height);
+      flatCtx.drawImage(this.canvasElement, 0, 0);
       // Store the complete data URI for proper display
-      this.utilservice.signatureData = this.canvasElement.toDataURL();
+      this.utilservice.signatureData = flattened.toDataURL();
       this.clearCanvas();
       this.modalCtrl.dismiss({
         checkClose:''

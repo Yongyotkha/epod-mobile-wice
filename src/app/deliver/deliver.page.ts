@@ -587,7 +587,9 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
   takePhoto() {
     if (this.platform.is('cordova')) {
       const options: CameraOptions = {
-        quality: 15,
+        quality: 50,
+        targetWidth: 1280,
+        targetHeight: 1280,
         destinationType: this.camera.DestinationType.DATA_URL,
         encodingType: this.camera.EncodingType.JPEG,
         mediaType: this.camera.MediaType.PICTURE,
@@ -736,6 +738,17 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
                       });
                       await alert.present();
                     }
+                  })
+                  .catch(async (err) => {
+                    console.error("CompleteDriverJobs failed", err);
+                    loading.dismiss();
+                    const alert = await this.alertContrl.create({
+                      cssClass: "my-custom-class",
+                      header: "ส่งข้อมูลไม่สำเร็จ",
+                      message: `กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง (${err && err.status !== undefined ? err.status : ""})`,
+                      buttons: ["ตกลง"],
+                    });
+                    await alert.present();
                   });
               }
             },
