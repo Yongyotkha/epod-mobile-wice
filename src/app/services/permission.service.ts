@@ -18,6 +18,9 @@ export class PermissionService {
   async checkCameraStatus(): Promise<CameraStatus> {
     // On Android, ask the AndroidPermissions plugin for current camera permission.
     try {
+      if (!this.platform.is('hybrid') && !this.platform.is('cordova') && !this.platform.is('capacitor')) {
+        return 'unknown';
+      }
       if (this.platform.is('android')) {
         const permission = this.androidPermissions.PERMISSION.CAMERA;
         const result = await this.androidPermissions.checkPermission(permission);
@@ -36,6 +39,10 @@ export class PermissionService {
   // prepare -> checkCameraStatus/authorized -> show (UI) -> scan
   async requestCameraPermission(): Promise<boolean> {
     try {
+      if (!this.platform.is('hybrid') && !this.platform.is('cordova') && !this.platform.is('capacitor')) {
+        // Browser will prompt when getUserMedia / file capture is used.
+        return true;
+      }
       if (this.platform.is('android')) {
         const permission = this.androidPermissions.PERMISSION.CAMERA;
         const result = await this.androidPermissions.checkPermission(permission);

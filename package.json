@@ -71,6 +71,7 @@
     "ionic-horizontal-calendar": "^1.0.5",
     "ionic2-calendar": "^0.5.8",
     "jquery": "^3.6.0",
+    "jsqr": "^1.4.0",
     "moment": "^2.24.0",
     "ngx-pinch-zoom": "^2.5.5",
     "rxjs": "~6.5.1",

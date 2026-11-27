@@ -12,6 +12,7 @@ import { UtilService } from "./../util.service";
 import { Component, OnInit } from "@angular/core";
 import { Camera, CameraOptions } from "@ionic-native/camera/ngx";
 import { File } from '@ionic-native/file/ngx';
+import { WebBridgeService } from "../services/web-bridge.service";
 
 @Component({
   selector: "app-edit-profile",
@@ -34,7 +35,8 @@ export class EditProfilePage implements OnInit {
     private modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     private camera: Camera,
-    private file: File
+    private file: File,
+    private webBridge: WebBridgeService,
   ) {}
 
   async ngOnInit() {
@@ -65,6 +67,20 @@ export class EditProfilePage implements OnInit {
   }
 
   pickImage(sourceType) {
+    if (!this.webBridge.isNative()) {
+      const preferCamera = sourceType === this.camera.PictureSourceType.CAMERA;
+      this.webBridge.capturePhoto(1280, 0.75, preferCamera).then(
+        (dataUrl) => {
+          const base64 = dataUrl.indexOf(',') >= 0 ? dataUrl.split(',')[1] : dataUrl;
+          this.changeImgProfile[0] = base64;
+          this.checkDisable = false;
+          console.log(this.changeImgProfile[0]);
+        },
+        () => { }
+      );
+      return;
+    }
+
     const options: CameraOptions = {
       quality: 75,
       sourceType: sourceType,

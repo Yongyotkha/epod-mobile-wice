@@ -6,22 +6,33 @@ import {
   LoadingController,
   Events,
   ModalController,
+  Platform,
 } from "@ionic/angular";
 import { Router, ActivatedRoute } from "@angular/router";
 import { HTTP } from "@ionic-native/http/ngx";
 import { AndroidPermissions } from "@ionic-native/android-permissions/ngx";
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import { LocationAccuracy } from "@ionic-native/location-accuracy/ngx";
+import { WebBridgeService } from "./services/web-bridge.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class UtilService {
   public isModal = "";
-  public baseURL = "https://tms.wicesupplychain.com/api/";
+  // On local web (ng serve) use same-origin + proxy.conf.json to avoid CORS.
+  // Native apps keep the absolute TMS URL.
+  public baseURL =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1")
+      ? "/api/"
+      : "https://tms.wicesupplychain.com/api/";
   // public baseURL = " https://scgp-bp-uat.wicesupplychain.com/";
   //public baseURL='http://aplltrack.com/'
   public signatureData = "";
+  /** Avoid repeating the web location explanation dialog every page. */
+  private webLocationPromptShown = false;
   public driverInfo: {
     driverCode: string;
     firstName: string;
@@ -78,7 +89,9 @@ export class UtilService {
     private navCtrl: NavController,
     private androidPermissions: AndroidPermissions,
     private geolocation: Geolocation,
-    private locationAccuracy: LocationAccuracy
+    private locationAccuracy: LocationAccuracy,
+    private platform: Platform,
+    private webBridge: WebBridgeService
   ) {
     try {
       // สำหรับ cordova-plugin-advanced-http
@@ -287,7 +300,11 @@ export class UtilService {
     });
   };
 
-  requestGPSPermission() {
+  async requestGPSPermission() {
+    if (!this.webBridge.isNative()) {
+      await this.requestWebLocationPermission();
+      return;
+    }
     this.locationAccuracy.canRequest().then((canRequest: boolean) => {
       if (canRequest) {
       } else {
@@ -310,7 +327,48 @@ export class UtilService {
     });
   }
 
+  /**
+   * Web: explain why location is needed, then trigger the browser permission prompt.
+   * Called after login when Home loads.
+   */
+  private async requestWebLocationPermission() {
+    // If we already have coordinates this session, skip the prompt noise.
+    if (this.locationData && this.locationData.latitude && this.locationData.longitude) {
+      return;
+    }
+    // Show the explanation only once after login; later pages just refresh quietly.
+    if (this.webLocationPromptShown) {
+      this.getLocationCoordinates(false);
+      return;
+    }
+    this.webLocationPromptShown = true;
+
+    const alert = await this.alertContrl.create({
+      cssClass: "my-custom-class",
+      header: "ขออนุญาตตำแหน่ง",
+      message:
+        "แอปต้องการใช้ตำแหน่งของคุณเพื่อบันทึกพิกัดตอนรับงานและนำส่งสินค้า กรุณากดอนุญาตเมื่อเบราว์เซอร์ถาม",
+      buttons: [
+        {
+          text: "ภายหลัง",
+          role: "cancel",
+        },
+        {
+          text: "เปิดตำแหน่ง",
+          handler: () => {
+            this.getLocationCoordinates(true);
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
   askToTurnOnGPS() {
+    if (!this.webBridge.isNative()) {
+      this.getLocationCoordinates(true);
+      return;
+    }
     this.locationAccuracy
       .request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY)
       .then(
@@ -322,7 +380,58 @@ export class UtilService {
       );
   }
 
-  getLocationCoordinates() {
+  getLocationCoordinates(showDeniedHint = false) {
+    if (!this.webBridge.isNative()) {
+      this.webBridge
+        .getCurrentPosition()
+        .then((resp) => {
+          this.locationData.latitude = resp.latitude;
+          this.locationData.longitude = resp.longitude;
+          this.locationData.accuracy = resp.accuracy;
+          this.locationData.timestamp = resp.timestamp;
+        })
+        .catch(async (error) => {
+          console.error("Error getting location:", error);
+          // code 1 = permission denied
+          if (error && error.code === 1) {
+            if (showDeniedHint) {
+              const alert = await this.alertContrl.create({
+                cssClass: "my-custom-class",
+                header: "ยังไม่ได้เปิดตำแหน่ง",
+                message:
+                  "คุณปฏิเสธสิทธิ์ตำแหน่ง หากต้องการเปิด ให้กดไอคอนแม่กุญแจที่แถบที่อยู่ แล้วตั้ง Location เป็น Allow จากนั้นรีเฟรชหน้า",
+                buttons: ["ตกลง"],
+              });
+              await alert.present();
+            }
+            return;
+          }
+          // code 3 = timeout — common on desktop/browser; do not block the user
+          if (error && error.code === 3) {
+            if (showDeniedHint) {
+              const alert = await this.alertContrl.create({
+                cssClass: "my-custom-class",
+                header: "ยังอ่านตำแหน่งไม่เจอ",
+                message:
+                  "ใช้เวลาหาตำแหน่งนานเกินไป แอปยังใช้งานได้ตามปกติ ลองเปิด Wi-Fi/GPS หรืออนุญาตตำแหน่งแล้วลองใหม่ภายหลัง",
+                buttons: ["ตกลง"],
+              });
+              await alert.present();
+            }
+            return;
+          }
+          if (showDeniedHint) {
+            const alert = await this.alertContrl.create({
+              cssClass: "my-custom-class",
+              header: "อ่านตำแหน่งไม่สำเร็จ",
+              message: "ยังดึงตำแหน่งไม่ได้ในตอนนี้ แอปยังใช้งานต่อได้",
+              buttons: ["ตกลง"],
+            });
+            await alert.present();
+          }
+        });
+      return;
+    }
     this.geolocation
       .getCurrentPosition()
       .then((resp) => {

@@ -2,15 +2,21 @@ import { Router } from '@angular/router';
 import { UtilService } from './../util.service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { WebBridgeService } from '../services/web-bridge.service';
 
 @Component({
   selector: 'app-getjob-qrscanner',
   templateUrl: './getjob-qrscanner.component.html',
   styleUrls: ['./getjob-qrscanner.component.scss'],
 })
-export class GetjobQrscannerComponent implements OnInit,OnDestroy {
+export class GetjobQrscannerComponent implements OnInit, OnDestroy {
   scanSubscription: any;
-  constructor(public qrScanner:QRScanner,public utiservice:UtilService,  private router: Router) { }
+  constructor(
+    public qrScanner: QRScanner,
+    public utiservice: UtilService,
+    private router: Router,
+    private webBridge: WebBridgeService,
+  ) { }
 
   private startScannerUI() {
     document.body.classList.add('scanner-active');
@@ -24,7 +30,34 @@ export class GetjobQrscannerComponent implements OnInit,OnDestroy {
     document.documentElement.classList.remove('qr-frame');
   }
 
+  private cleanupNative() {
+    if (this.scanSubscription) {
+      this.scanSubscription.unsubscribe();
+      this.scanSubscription = null;
+    }
+    try { this.qrScanner.hide(); } catch (err) {}
+    try { this.qrScanner.destroy(); } catch (err) {}
+  }
+
   ngOnInit() {
+    if (!this.webBridge.isNative()) {
+      this.startScannerUI();
+      this.webBridge.startQrScan(
+        (text: string) => {
+          console.log('QR Scanned:', text);
+          this.stopScannerUI();
+          this.router.navigate(['/getjob', { text: text }]);
+        },
+        (e) => {
+          console.error('QR Scanner Error:', e);
+          alert('เกิดข้อผิดพลาดในการเปิดกล้อง: ' + e);
+          this.stopScannerUI();
+          this.router.navigate(['/getjob']);
+        }
+      );
+      return;
+    }
+
     // Request camera permission first
     this.qrScanner
       .prepare()
@@ -53,7 +86,7 @@ export class GetjobQrscannerComponent implements OnInit,OnDestroy {
               this.stopScannerUI();
 
               // 4) navigate
-              this.router.navigate(["/getjob", { text: text }]);
+              this.router.navigate(['/getjob', { text: text }]);
             });
         } else if (status.denied) {
           // Permission denied permanently
@@ -73,27 +106,16 @@ export class GetjobQrscannerComponent implements OnInit,OnDestroy {
         console.error('QR Scanner Error:', e);
         alert('เกิดข้อผิดพลาดในการเปิดกล้อง: ' + e);
 
-        if (this.scanSubscription) {
-          this.scanSubscription.unsubscribe();
-          this.scanSubscription = null;
-        }
-
-        try { this.qrScanner.hide(); } catch (err) {}
-        try { this.qrScanner.destroy(); } catch (err) {}
+        this.cleanupNative();
         this.stopScannerUI();
         this.router.navigate(['/getjob']);
       });
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     console.log('Destroying QR Scanner');
-    if (this.scanSubscription) {
-      this.scanSubscription.unsubscribe();
-      this.scanSubscription = null;
-    }
-
-    try { this.qrScanner.hide(); } catch (err) {}
-    try { this.qrScanner.destroy(); } catch (err) {}
+    this.webBridge.stopQrScan();
+    this.cleanupNative();
     this.stopScannerUI();
   }
 

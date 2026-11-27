@@ -39,6 +39,7 @@ import { AddDropPage } from "../add-drop/add-drop.page";
 import { AddOrderPage } from "../add-order/add-order.page";
 import { EditOrderPage } from "../edit-order/edit-order.page";
 import { AuthService } from "./../services/auth.service";
+import { WebBridgeService } from "./../services/web-bridge.service";
 
 
 
@@ -104,7 +105,13 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
   private setQrScanningUi(isScanning: boolean) {
     const body = document.getElementsByTagName("body")[0];
     if (!body) return;
-    body.style.opacity = isScanning ? "0" : "1";
+    // Native QR plugin draws behind a transparent WebView.
+    // On web we keep the page opaque and show a video overlay instead.
+    if (this.webBridge.isNative()) {
+      body.style.opacity = isScanning ? "0" : "1";
+    } else {
+      body.style.opacity = "1";
+    }
     if (isScanning) {
       body.classList.add("qr-scanning");
       document.documentElement.classList.add("qr-frame");
@@ -116,6 +123,9 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
 
   private stopQrScanning() {
     this.setQrScanningUi(false);
+    try {
+      this.webBridge.stopQrScan();
+    } catch { }
     try {
       this.qr.hide();
     } catch { }
@@ -147,6 +157,7 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
     public popoverController: PopoverController,
     public sanitizer: DomSanitizer,
     private authService: AuthService,
+    private webBridge: WebBridgeService,
   ) {
     activatedroute.params.subscribe(async (val) => {
       this.showJoblist();
@@ -251,7 +262,95 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
     return { x: pageX - rect.left, y: pageY - rect.top };
   }
 
+  private async handleDeliverScanResult(textfound: string) {
+    let orderList: Array<any> = [];
+    for (let i = 0; i < this.utilservice.jobList.length; i++) {
+      for (let k = 0; k < this.utilservice.jobList[i].orders.length; k++) {
+        orderList.push(this.utilservice.jobList[i].orders[k]);
+      }
+    }
+    if (
+      orderList.filter((e) => {
+        return e.clienInvoiceNumber == textfound;
+      }).length > 0
+    ) {
+      if (
+        this.utilservice.completejobList.filter((e) => {
+          return e.clienInvoiceNumber == textfound;
+        }).length > 0
+      ) {
+        const alert = await this.alertContrl.create({
+          cssClass: "my-custom-class",
+          header: "ผิดพลาด",
+          message: `สแกนซ่ำ`,
+          buttons: ["ตกลง"],
+        });
+        await alert.present();
+      } else {
+        orderList = orderList.filter((e) => {
+          return e.clienInvoiceNumber == textfound;
+        });
+        for (let j = 0; j < orderList.length; j++) {
+          orderList[j].shipping_status_deliver = true;
+          this.utilservice.completejobList.push(orderList[j]);
+        }
+
+        const alert = await this.alertContrl.create({
+          cssClass: "my-custom-class",
+          header: "สำเร็จ",
+          message: `เพิ่มรายการสำเร็จ`,
+          buttons: [
+            {
+              text: "ตกลง",
+              handler: () => {
+                this.checktextinput = false;
+                this.showJoblist();
+                if (this.utilservice.completejobList.length == 0) {
+                  this.boolhide = true;
+                } else {
+                  this.boolhide = false;
+                }
+              },
+            },
+          ],
+        });
+        await alert.present();
+      }
+    } else {
+      const alert = await this.alertContrl.create({
+        cssClass: "my-custom-class",
+        header: "ผิดพลาด",
+        message: `ไม่ผบข้อมูลหรือยังไม่ได้รับงาน`,
+        buttons: ["ตกลง"],
+      });
+      await alert.present();
+    }
+    this.checktextinput = false;
+    this.showJoblist();
+    if (this.utilservice.completejobList.length == 0) {
+      this.boolhide = true;
+    } else {
+      this.boolhide = false;
+    }
+  }
+
   public async startscanning() {
+    if (!this.webBridge.isNative()) {
+      this.setQrScanningUi(true);
+      this.webBridge.startQrScan(
+        async (textfound) => {
+          this.stopQrScanning();
+          await this.handleDeliverScanResult(textfound);
+        },
+        (err) => {
+          console.log(err);
+          this.stopQrScanning();
+          alert("ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตสิทธิ์กล้อง");
+        }
+      );
+      return;
+    }
+
     this.qr.prepare().then((status: QRScannerStatus) => {
       if (status.authorized) {
         this.qr.show();
@@ -260,79 +359,7 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
         this.openCamqrscan = this.qr.scan().subscribe(
           async (textfound) => {
             this.stopQrScanning();
-            let orderList: Array<any> = [];
-            for (let i = 0; i < this.utilservice.jobList.length; i++) {
-              for (
-                let k = 0;
-                k < this.utilservice.jobList[i].orders.length;
-                k++
-              ) {
-                orderList.push(this.utilservice.jobList[i].orders[k]);
-              }
-            }
-            if (
-              orderList.filter((e) => {
-                return e.clienInvoiceNumber == textfound;
-              }).length > 0
-            ) {
-              if (
-                this.utilservice.completejobList.filter((e) => {
-                  return e.clienInvoiceNumber == textfound;
-                }).length > 0
-              ) {
-                const alert = await this.alertContrl.create({
-                  cssClass: "my-custom-class",
-                  header: "ผิดพลาด",
-                  message: `สแกนซ่ำ`,
-                  buttons: ["ตกลง"],
-                });
-                await alert.present();
-              } else {
-                orderList = orderList.filter((e) => {
-                  return e.clienInvoiceNumber == textfound;
-                });
-                for (let j = 0; j < orderList.length; j++) {
-                  orderList[j].shipping_status_deliver = true;
-                  this.utilservice.completejobList.push(orderList[j]);
-                }
-
-                const alert = await this.alertContrl.create({
-                  cssClass: "my-custom-class",
-                  header: "สำเร็จ",
-                  message: `เพิ่มรายการสำเร็จ`,
-                  buttons: [
-                    {
-                      text: "ตกลง",
-                      handler: () => {
-                        this.checktextinput = false;
-                        this.showJoblist();
-                        if (this.utilservice.completejobList.length == 0) {
-                          this.boolhide = true;
-                        } else {
-                          this.boolhide = false;
-                        }
-                      },
-                    },
-                  ],
-                });
-                await alert.present();
-              }
-            } else {
-              const alert = await this.alertContrl.create({
-                cssClass: "my-custom-class",
-                header: "ผิดพลาด",
-                message: `ไม่ผบข้อมูลหรือยังไม่ได้รับงาน`,
-                buttons: ["ตกลง"],
-              });
-              await alert.present();
-            }
-            this.checktextinput = false;
-            this.showJoblist();
-            if (this.utilservice.completejobList.length == 0) {
-              this.boolhide = true;
-            } else {
-              this.boolhide = false;
-            }
+            await this.handleDeliverScanResult(textfound);
           },
           (err) => {
             console.log(err);
@@ -584,7 +611,27 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
   //     }
   //   })
   // }
+  private storeCapturedPhoto(imageData: string) {
+    const dataUrl = imageData.startsWith('data:image')
+      ? imageData
+      : `data:image/jpeg;base64,${imageData}`;
+
+    this.utilservice.imgCompletejobList.push(dataUrl);
+    this.showimage = this.utilservice.imgCompletejobList.map(img =>
+      this.sanitizer.bypassSecurityTrustUrl(img)
+    );
+    console.log('Images stored:', this.utilservice.imgCompletejobList);
+  }
+
   takePhoto() {
+    if (!this.webBridge.isNative()) {
+      this.webBridge.capturePhoto(1280, 0.5, true).then(
+        (dataUrl) => this.storeCapturedPhoto(dataUrl),
+        (err) => console.log('ผิดพลาด: ' + err)
+      );
+      return;
+    }
+
     if (this.platform.is('cordova')) {
       const options: CameraOptions = {
         quality: 50,
@@ -601,20 +648,7 @@ export class DeliverPage implements OnInit, AfterViewInit, OnDestroy {
 
       this.camera.getPicture(options).then(
         (imageData) => {
-          // เช็คว่า imageData มี prefix อยู่แล้วหรือไม่
-          const dataUrl = imageData.startsWith('data:image')
-            ? imageData
-            : `data:image/jpeg;base64,${imageData}`;
-          
-          // Store the complete data URI
-          this.utilservice.imgCompletejobList.push(dataUrl);
-          
-          // Sanitize URLs for display
-          this.showimage = this.utilservice.imgCompletejobList.map(img => 
-            this.sanitizer.bypassSecurityTrustUrl(img)
-          );
-          
-          console.log('Images stored:', this.utilservice.imgCompletejobList);
+          this.storeCapturedPhoto(imageData);
         },
         (err) => {
           console.log('ผิดพลาด: ' + err);
